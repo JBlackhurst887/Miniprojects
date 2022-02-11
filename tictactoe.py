@@ -76,40 +76,56 @@ def current_user(user):
 
 def wincondition(user, board):
     if check_row(user, board):
+        print('row')
         return True
     if check_col(user, board):
+        print('col')
         return True
     if check_diag(user, board):
+        print('diag')
         return True
     return False
 
 
 def check_row(user, board):
+    # Here was are checking that all the elements in the row equal the user counter.
+    # This uses list comprehension. This is Python's way of iterating through lists and
+    # is preferred to for loops.
+    #
+    # For instance, row = ["x", "_", "x"]
+    # [x for x in row] == ["x", "_", "x"]
+    # We are iterating over each element in the list and putting them into a new list.
+    #
+    # [elem == user for elem in row]. Now this is not just adding the elements to the
+    # new list but also making a comparison to the player who just made a turn.
+    # If for instance player x just made a turn, the list would interally be doing:
+    # ["x" == "x", "_" == "x", "x" == "x"]
+    # These comparisions are made by Python and thus the list would equal.
+    # [True, False, True]
+    #
+    # Now the final stage is using the all function. This checks that all elements in a
+    # list are True. So calling
+    # all([True, False, True]) would return False, so we know the user has no completed
+    # this given row. Where are all([True, True, True]) returns True, so we know the
+    # user has completed the row and has won the game.
+
     for row in board:
-        complete_row = True
-        for slot in row:
-            if slot != user:
-                complete_row = False
-                break
-            if complete_row:
-                return True
-        return False
+        if all([elem == user for elem in row]):
+            return True
+    return False
 
 
 def check_col(user, board):
+    # Exactly the same login here applied as above.
     for col in range(3):
-        complete_col = True
-        for row in range(3):
-            if board[row][col] != user:
-                complete_col = False
-                break
-            if complete_col:
-                return True
-        return False
+        if all([board[row][col] == user for row in range(3)]):
+            return True
+    return False
 
 
 def check_diag(user, board):
-    if board[0][0] == user and board[1][1] == user and board[2][2]:
+    # Forgot to include "== user" for board[2][2].
+    if board[0][0] == user and board[1][1] == user and board[2][2] == user:
         return True
     elif board[0][2] == user and board[1][1] == user and board[2][0] == user:
         return True
